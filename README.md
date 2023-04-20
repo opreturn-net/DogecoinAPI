@@ -11,6 +11,7 @@ You will need to set those variables in main.py:
 rpcuser = "rpcuser"
 rpcpassword = "rpcpassword"
 rpcport = 22555
+rpchost = "127.0.0.1"
 ````
 
 The port is the standard port but must be defined. Password and username must be defined in your ``dogecoin.conf``
