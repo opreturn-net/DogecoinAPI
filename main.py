@@ -325,10 +325,9 @@ async def create_raw_transaction(inputs: list, outputs: dict):
     """
  #   Create a transaction spending the given inputs and creating new outputs. Outputs can be addresses or data. Returns hex-encoded raw transaction. Note that the transaction inputs are not signed, and it is not stored in the wallet or transmitted to the network.
     """
-    rpc = RPC_Connection(doge_user, doge_password, doge_host, doge_port)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     input_list = [{"txid": i["txid"], "vout": i["vout"]} for i in inputs]
     output_dict = {k: v for d in outputs for k, v in d.items()}
-	#raw_tx = {}
     try:
         raw_tx = rpc.command("createrawtransaction", params=[input_list, output_dict])
         return {"raw_tx": raw_tx}
