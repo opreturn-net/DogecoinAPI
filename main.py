@@ -20,7 +20,7 @@ class UnicornException(Exception):
 rpcuser = "rpcuser"
 rpcpassword = "rpcpassword"
 rpcport = 22555
-
+rpchost = "127.0.0.1"
 
 
 app = FastAPI(
@@ -31,7 +31,7 @@ This service comes without warranty. Use at own risk. Only hobby project (:
 
 ''',
     redoc_url="/",
-    docs_url=None
+    docs_url="/api/docs"
 )
 
 origins = ["*"]
@@ -54,13 +54,13 @@ async def unicorn_exception_handler(request: Request, exc: UnicornException):
 
 #app.mount('/web', StaticFiles(directory='static',html=True))
 
-#@app.get("/api/blockchain/getbestblockhash", response_model=BestBlockhash)
-@app.get("/api/blockchain/getbestblockhash")
+#@app.get("/api/doge/getbestblockhash", response_model=BestBlockhash)
+@app.get("/api/doge/getbestblockhash")
 def get_best_blockhash():
     """
     Returns the hash of the best (tip) block in the longest blockchain.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     try:
         data = rpc.command("getbestblockhash")
         #return BestBlockhash(best_blockhash=data)
@@ -69,13 +69,13 @@ def get_best_blockhash():
         raise HTTPException(status_code=418, detail="Something went wrong")
     
 
-@app.get("/api/blockchain/getblock/{hashval}")
+@app.get("/api/doge/getblock/{hashval}")
 async def get_block(hashval):
     """
     Returns an Object with information about block <hash>.
     Always in "verbose" mode.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     try:
         print (hashval)
         data = rpc.command("getblock", params=[hashval])
@@ -83,12 +83,12 @@ async def get_block(hashval):
     except:
         raise HTTPException(status_code=418, detail="Something went wrong")
 
-@app.get("/api/blockchain/getblockchaininfo")
+@app.get("/api/doge/getblockchaininfo")
 def get_blockchain_info():
     """
     Returns an object containing various state info regarding blockchain processing.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         data = rpc.command("getblockchaininfo")
@@ -96,12 +96,12 @@ def get_blockchain_info():
     except:
         raise HTTPException(status_code=418, detail="Something went wrong")
 
-@app.get("/api/blockchain/getblockcount")
+@app.get("/api/doge/getblockcount")
 def get_blockcount():
     """
     Returns the number of blocks in the longest blockchain.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         data = rpc.command("getblockcount")
@@ -111,12 +111,12 @@ def get_blockcount():
         #print (e)
         raise HTTPException(status_code=418, detail="Something went wrong")
 
-@app.get("/api/blockchain/getblockhash/{height}")
+@app.get("/api/doge/getblockhash/{height}")
 async def get_blockhash(height):
     """
     Returns hash of block in best-block-chain at height provided.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         #print (height)
@@ -125,13 +125,13 @@ async def get_blockhash(height):
     except:
         raise HTTPException(status_code=418, detail="Something went wrong")
 
-@app.get("/api/blockchain/getblockheader/{hashval}")
+@app.get("/api/doge/getblockheader/{hashval}")
 async def get_blockheader(hashval):
     """
     Returns an Object with information about blockheader <hash>.
     Always in "verbose" mode.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     #data = {}
     try:
         data = rpc.command("getblockheader", params=[hashval])
@@ -140,12 +140,12 @@ async def get_blockheader(hashval):
         print (e)
         raise HTTPException(status_code=418, detail="Something went wrong")
 
-@app.get("/api/blockchain/getchaintips")
+@app.get("/api/doge/getchaintips")
 def get_chaintips():
     """
     Return information about all known tips in the block tree, including the main chain as well as orphaned branches.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         data = rpc.command("getchaintips")
@@ -153,12 +153,12 @@ def get_chaintips():
     except Exception as e:
         raise HTTPException(status_code=418, detail="Something went wrong")
     
-@app.get("/api/blockchain/getdifficulty")
+@app.get("/api/doge/getdifficulty")
 def get_difficulty():
     """
     Returns the proof-of-work difficulty as a multiple of the minimum difficulty.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         data = rpc.command("getdifficulty")
@@ -166,12 +166,12 @@ def get_difficulty():
     except Exception as e:
         raise HTTPException(status_code=418, detail="Something went wrong")
 
-@app.get("/api/blockchain/getmempoolancestors/{txid}")
+@app.get("/api/doge/getmempoolancestors/{txid}")
 async def get_mempool_ancestors(txid):
     """
     If txid is in the mempool, returns all in-mempool ancestors.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         data = rpc.command("getmempoolancestors", params=[txid])
@@ -179,12 +179,12 @@ async def get_mempool_ancestors(txid):
     except Exception as e:
         raise HTTPException(status_code=418, detail="Something went wrong")
 
-@app.get("/api/blockchain/getmempooldescendants/{txid}")
+@app.get("/api/doge/getmempooldescendants/{txid}")
 async def get_mempool_descendants(txid):
     """
     If txid is in the mempool, returns all in-mempool descendants.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         data = rpc.command("getmempooldescendants", params=[txid])
@@ -192,12 +192,12 @@ async def get_mempool_descendants(txid):
     except Exception as e:
         raise HTTPException(status_code=418, detail="Something went wrong")
 
-@app.get("/api/blockchain/getmempoolentry/{txid}")
+@app.get("/api/doge/getmempoolentry/{txid}")
 async def get_mempool_entry(txid):
     """
     Returns mempool data for given transaction.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         data = rpc.command("getmempoolentry", params=[txid])
@@ -205,12 +205,12 @@ async def get_mempool_entry(txid):
     except Exception as e:
         raise HTTPException(status_code=418, detail="Something went wrong")
 
-@app.get("/api/blockchain/getmempoolinfo")
+@app.get("/api/doge/getmempoolinfo")
 def get_mempool_info():
     """
     Returns details on the active state of the TX memory pool.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         data = rpc.command("getmempoolinfo")
@@ -218,37 +218,31 @@ def get_mempool_info():
     except Exception as e:
         raise HTTPException(status_code=418, detail="Something went wrong")
 
-@app.get("/api/blockchain/getrawmempool")
+@app.get("/api/doge/getrawmempool")
 def get_raw_mempool():
     """
     Returns all transaction ids in memory pool as a json array of string transaction ids.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         data = rpc.command("getrawmempool")
         return data
     except Exception as e:
         raise HTTPException(status_code=418, detail="Something went wrong")
-
-
-"""    
-
-How to handle second parameter?
-
-@app.get("/api/blockchain/gettxout/{txid}")
-async def get_txout(txid):
-    
-    #Returns details about an unspent transaction output.
-    
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+        
+@app.get("/api/doge/gettxout/{txid}/{n}")
+def get_txout(txid: str, n: int):
+    """
+    Returns details about an unspent transaction output.
+    """
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
-        data = rpc.command("gettxout", params=[txid])
+        data = rpc.command("gettxout", params=[txid, n])
         return data
     except Exception as e:
         raise HTTPException(status_code=418, detail="Something went wrong")
-"""
 
 #gettxoutproof
 #gettxoutsetinfo
@@ -258,12 +252,12 @@ async def get_txout(txid):
 #verifytxoutproof "proof"
 
 # CONTROL
-@app.get("/api/blockchain/getinfo")
+@app.get("/api/doge/getinfo")
 def get_info():
     """
     DEPRECATED. Returns an object containing various state info.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         data = rpc.command("getinfo")
@@ -271,24 +265,25 @@ def get_info():
     except Exception as e:
         raise HTTPException(status_code=418, detail="Something went wrong")
     
-@app.get("/api/blockchain/help")
+@app.get("/api/doge/help")
 def help_all():
     """
     List all commands, or get help for a specified command.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         data = rpc.command("help")
         return data
     except Exception as e:
         raise HTTPException(status_code=418, detail="Something went wrong")
+        
 @app.get("/api/blockchain/help/{command}")
 async def help(command):
     """
     List all commands, or get help for a specified command.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     print (command)
     try:
@@ -302,12 +297,12 @@ async def help(command):
 
 
 # NETWORK
-@app.get("/api/blockchain/getnettotals")
+@app.get("/api/doge/getnettotals")
 def get_net_totals():
     """
     Returns all transaction ids in memory pool as a json array of string transaction ids.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         data = rpc.command("getnettotals")
@@ -323,15 +318,31 @@ def get_net_totals():
 #sendrawtransaction "hexstring" ( allowhighfees )
 #signrawtransaction "hexstring" ( [{"txid":"id","vout":n,"scriptPubKey":"hex","redeemScript":"hex"},...] ["privatekey1",...] sighashtype )
 
-
-
+#createrawtransaction returning internal server error with post body 
+"""
+@app.post("/api/doge/createrawtransaction")
+async def create_raw_transaction(inputs: list, outputs: dict):
+    """
+ #   Create a transaction spending the given inputs and creating new outputs. Outputs can be addresses or data. Returns hex-encoded raw transaction. Note that the transaction inputs are not signed, and it is not stored in the wallet or transmitted to the network.
+    """
+    rpc = RPC_Connection(doge_user, doge_password, doge_host, doge_port)
+    input_list = [{"txid": i["txid"], "vout": i["vout"]} for i in inputs]
+    output_dict = {k: v for d in outputs for k, v in d.items()}
+	#raw_tx = {}
+    try:
+        raw_tx = rpc.command("createrawtransaction", params=[input_list, output_dict])
+        return {"raw_tx": raw_tx}
+    except Exception as e:
+        print (e)
+        raise HTTPException(status_code=418, detail="Something went wrong")
+"""
     
-@app.get("/api/rawtransactions/decoderawtransaction/{hexstring}")
+@app.get("/api/doge/decoderawtransaction/{hexstring}")
 async def decode_rawtransaction(hexstring):
     """"
     Returns an Object with information about blockheader <hash>.
     """
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         data = rpc.command("decoderawtransaction", params=[hexstring])
@@ -341,9 +352,9 @@ async def decode_rawtransaction(hexstring):
         print (e)
         raise HTTPException(status_code=418, detail="Something went wrong")
 
-@app.get("/api/rawtransactions/decodescript/{hexstring}")
+@app.get("/api/doge/decodescript/{hexstring}")
 async def decode_script(hexstring):
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         data = rpc.command("decodescript", params=[hexstring])
@@ -353,9 +364,9 @@ async def decode_script(hexstring):
         print (e)
         raise HTTPException(status_code=418, detail="Something went wrong")
 
-@app.get("/api/rawtransactions/getrawtransaction/{txid}")
+@app.get("/api/doge/getrawtransaction/{txid}")
 async def get_rawtransaction(txid):
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         data = rpc.command("getrawtransaction", params=[txid, True])
@@ -365,9 +376,9 @@ async def get_rawtransaction(txid):
         print (e)
         raise HTTPException(status_code=418, detail="Something went wrong")
 
-@app.get("/api/rawtransactions/sendrawtransaction/{hexstring}")
+@app.get("/api/doge/sendrawtransaction/{hexstring}")
 async def send_rawtransaction(hexstring):
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         data = rpc.command("sendrawtransaction", params=[hexstring])
@@ -381,9 +392,9 @@ async def send_rawtransaction(hexstring):
 
 
 # UTIL
-@app.get("/api/rawtransactions/validateaddress/{address}")
+@app.get("/api/doge/validateaddress/{address}")
 async def validate_address(address):
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     data = {}
     try:
         data = rpc.command("validateaddress", params=[address])
@@ -393,25 +404,23 @@ async def validate_address(address):
         print (e)
         raise HTTPException(status_code=418, detail="Something went wrong")
 
-"""@app.get("/api/rawtransactions/verifymessage/")
-async def verify_message(signature: str, mes: str):
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
-    data = {}
-    print ("S: " + signature)
-    print ("M: " + mes)
+@app.get("/api/doge/verifymessage")
+async def verify_message(address: str, signature: str, message: str):
+    """
+    Verify a signed message.
+    """
     try:
-        data = rpc.command("verifymessage", params=[signature, mes])
-        return data
+        rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
+        is_valid = rpc.command("verifymessage", params=[address, signature, message])
+        return {"is_valid": is_valid}  # Return a dictionary with the result
     except Exception as e:
-        #raise UnicornException(name="getbestblockhash")
-        print (e)
-        raise HTTPException(status_code=418, detail="Something went wrong")"""
+        raise HTTPException(status_code=500, detail="Something went wrong")  
 
 
 """
 @app.get("/api/test")
 def read_root():
-    rpc = RPC_Connection(rpcuser, rpcpassword, "127.0.0.1",rpcport)
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
     try:
         data = rpc.command("getbestblockhash")
         return data
