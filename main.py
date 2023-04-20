@@ -310,6 +310,42 @@ def get_net_totals():
     except Exception as e:
         raise HTTPException(status_code=418, detail="Something went wrong")
 
+@app.get("/api/doge/getpeerinfo")
+def get_peer_info():
+    """
+    Returns data about each connected network node as a json array of objects.
+    """
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
+    try:
+        data = rpc.command("getpeerinfo")
+        return data
+    except:
+        raise HTTPException(status_code=418, detail="Something went wrong.")
+
+@app.get("/api/doge/getnetworkinfo")
+def get_network_info():
+    """
+    Returns data about each connected network node as a json array of objects.
+    """
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
+    try:
+        data = rpc.command("getnetworkinfo")
+        return data
+    except:
+        raise HTTPException(status_code=418, detail="Something went wrong.")
+
+@app.get("/api/doge/getconnectioncount")
+def get_connection_count():
+    """
+    Returns the number of connections to other nodes.
+    """
+    rpc = RPC_Connection(rpcuser, rpcpassword, rpchost, rpcport)
+    try:
+        data = rpc.command("getconnectioncount")
+        return data
+    except:
+        raise HTTPException(status_code=418, detail="Something went wrong.")
+
 
 #== Rawtransactions ==
 #createrawtransaction [{"txid":"id","vout":n},...] {"address":amount,"data":"hex",...} ( locktime )
